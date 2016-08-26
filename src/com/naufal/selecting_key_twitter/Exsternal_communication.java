@@ -18,7 +18,7 @@ import com.naufal.util.io.FileUtils;
  */
 public class Exsternal_communication {
 	public static String FILE_FOLLOWER_FOLLOWING = "./data-in/comunication_exsternal/follower-following-unique.txt";
-	public static String FILE_FOLLOWER_FOLLOWING_OUT = "./data-out/comunication_exsternal/follower-following-unique.txt";
+	public static String FILE_FOLLOWER_FOLLOWING_OUT = "./data-out/comunication_exsternal/follower-following-unique-2.txt";
 	
     public static Multimap<String, Double> myMultimapPopulatiry = ArrayListMultimap.create();
     public static Multimap<String, Double> myMultimapTff = ArrayListMultimap.create();
@@ -80,14 +80,9 @@ public class Exsternal_communication {
 		// - claculation -
 		for(String key : rstPopularity.keySet()) {
 			Collection<Double> valuePopularity = myMultimapPopulatiry.get(key);
-			Collection<Double> valueTff = myMultimapTff.get(key);
 			Double co_exs;
-			if (valueTff.iterator().next()==0.0) {
-				co_exs = 0.0;
-			}else{
-				co_exs = (valuePopularity.iterator().next()+ valueTff.iterator().next())/2;
-			}
-	        //System.out.println("Eksternal Comunication : "+key+"\t"+valuePopularity.iterator().next()+"\t"+valueTff.iterator().next()+"\t"+co_exs+"");
+			co_exs = valuePopularity.iterator().next();
+	        System.out.println("Eksternal Comunication : "+key+"\t"+valuePopularity.iterator().next());
 			FileUtils.writefile(""+key+"\t"+co_exs+"", FILE_FOLLOWER_FOLLOWING_OUT);
 		}
 		

@@ -7,14 +7,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.naufal.util.io.FileUtils;
-
 /**
  * @author ahmadluky
- * = following + reply + retweet + like + mention tweet
  */
 public class Accesibility {
 	public static String FILE_MENTION = "./data-in/accessibility/mention/data.txt";
@@ -35,7 +31,6 @@ public class Accesibility {
 	public static String FILE_FOLLOWING = "./data-in/accessibility/following/follower-unique.txt";
     public static Multimap<String, Integer> myMultimaFollowing = ArrayListMultimap.create();
     public static Multimap<String, Integer> rstFollowing;
-    
 	// mention
     public static Multimap<String, Integer> readMention(Multimap<String, Integer> myMultimapP) throws FileNotFoundException, IOException{
 		try(BufferedReader br = new BufferedReader(new FileReader(FILE_MENTION))) {
@@ -55,15 +50,11 @@ public class Accesibility {
 		for(String key : rstMention.keySet()) {
 			Collection<Integer> valueMention= myMultimapMention.get(key);
 	        Integer sum=0;
-	        for (Iterator<Integer> iterator = valueMention.iterator(); iterator.hasNext();) {
+	        for (Iterator<Integer> iterator = valueMention.iterator(); iterator.hasNext();)
 				sum += (Integer) iterator.next();
-			}
-	        FileUtils.writefile(""+key+"\t"+sum+"", "./data-out/accessibility/mention/data.txt");
-	        //System.out.println("Mention : "+key+"\t"+valueMention.toString()+"\t"+sum);
 	        rstMention_.put(key, sum);
 		}
 	}
-	
 	// reply
 	public static Multimap<String, Integer> readReply(Multimap<String, Integer> myMultimap) throws FileNotFoundException, IOException{
 		try(BufferedReader br = new BufferedReader(new FileReader(FILE_REPLY))) {
@@ -87,12 +78,9 @@ public class Accesibility {
 	        for (Iterator<Integer> iterator = valueReply.iterator(); iterator.hasNext();) {
 				sum += (Integer) iterator.next();
 			}
-	        //System.out.println("reply : "+key+"\t"+sum+"\t"+valueReply.toString());
-			FileUtils.writefile(""+key+"\t"+sum+"", "./data-out/accessibility/reply/data.txt");
 	        rstReply_.put(key, sum);
 		}
 	}
-	
 	//meretweet
 	public static Multimap<String, Integer> readRetweet(Multimap<String, Integer> myMultimap) throws FileNotFoundException, IOException{
 		try(BufferedReader br = new BufferedReader(new FileReader(FILE_RETWEET))) {
@@ -116,12 +104,9 @@ public class Accesibility {
 	        for (Iterator<Integer> iterator = valueRetweet.iterator(); iterator.hasNext();) {
 				sum += (Integer) iterator.next();
 			}
-	        //System.out.println("retweet : "+key+"\t"+sum+"");
-			FileUtils.writefile(""+key+"\t"+sum+"", "./data-out/accessibility/retweet/data.txt");
 			rstRetweet_.put(key, sum);
 		}
 	}
-	
 	//like
 	public static Multimap<String, Integer> readLike(Multimap<String, Integer> myMultimap) throws FileNotFoundException, IOException{
 		try(BufferedReader br = new BufferedReader(new FileReader(FILE_LIKE))) {
@@ -129,7 +114,6 @@ public class Accesibility {
 			while ((sCurrentLine = br.readLine()) != null) {
 		        String[] s= sCurrentLine.split(";");
 			    myMultimap.put(s[0], Integer.parseInt(s[1]));
-		        FileUtils.writefile(""+s[0]+"\t"+Integer.parseInt(s[1])+"", "./data-out/accessibility/like/data.txt");
 			}
 		    return myMultimap;
 		}
@@ -137,7 +121,6 @@ public class Accesibility {
 	public static void like() throws FileNotFoundException, IOException{
 		rstLike = readLike(myMultimaLike);
 	}
-	
 	//following
 	public static Multimap<String, Integer> readFollowing(Multimap<String, Integer> myMultimap) throws FileNotFoundException, IOException{
 		try(BufferedReader br = new BufferedReader(new FileReader(FILE_FOLLOWING))) {
@@ -145,7 +128,7 @@ public class Accesibility {
 			while ((sCurrentLine = br.readLine()) != null) {
 		        String[] s= sCurrentLine.split(";");
 			    myMultimap.put(s[0], Integer.parseInt(s[1]));
-		        FileUtils.writefile(""+s[0]+"\t"+Integer.parseInt(s[1])+"", "./data-out/accessibility/following/data.txt");
+		        //FileUtils.writefile(""+s[0]+"\t"+Integer.parseInt(s[1])+"", "./data-out/accessibility/following/data.txt");
 			}
 		    return myMultimap;
 		}
@@ -153,60 +136,50 @@ public class Accesibility {
 	public static void following() throws FileNotFoundException, IOException{
 		rstFollowing = readFollowing(myMultimaFollowing);
 	}
-	
 	public static void main(String[] args) throws IOException{
         System.out.println("Starting Job Exsternal Comunication");
         long startTime = new Date().getTime();
-        
-		//--praprosesing
 		mention();
 		reply();
 		retweet();
         like();
         following();
-        
-        //--calclulation
-        int i=1;
+        @SuppressWarnings("unused")
+		int i=1;
 		for(String key : rstFollowing.keySet()) {
 			Collection<Integer> valueMention = rstMention_.get(key);
 			Collection<Integer> valueReply= rstReply_.get(key);
 			Collection<Integer> valueRetweet= rstRetweet_.get(key);
 			Collection<Integer> valueLike= rstLike.get(key);
 			Collection<Integer> valueFollowiing= rstFollowing.get(key);
-			System.out.println(i++ +"\t"+key+"");
 			int mention_;
 			if (valueMention.size()==0) 
 				mention_ = 0;
 			else
 				mention_ =  valueMention.iterator().next();
-			
 			int reply_;
 			if (valueReply.size()==0) 
 				reply_ = 0;
 			else
 				reply_ =  valueReply.iterator().next();
-			
 			int retweet_;
 			if (valueRetweet.size()==0) 
 				retweet_ = 0;
 			else
 				retweet_ =  valueRetweet.iterator().next();
-
 			int like_;
 			if (valueLike.size()==0) 
 				like_ = 0;
 			else
 				like_ =  valueLike.iterator().next();
-			
-			Double accsesibility = (double) ((valueFollowiing.iterator().next()+
+			@SuppressWarnings("unused")
+			Double accsesibilityVal = (double) ((valueFollowiing.iterator().next()+
 												reply_+
 												retweet_+
 												like_+
-												mention_)/5);
-			System.out.println(""+key+"\t"+accsesibility+"");
-	        FileUtils.writefile(""+key+"\t"+accsesibility+"", "./data-out/accessibility/result/data.txt");
+												mention_)
+												);
 		}
-		
 	    final double duration = (System.currentTimeMillis() - startTime)/1000.0;
 	    System.out.println("Job Exsternal Comunication Finished in " + duration + " seconds");
 			
